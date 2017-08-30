@@ -1,0 +1,98 @@
+1.hbase(main):001:0> create 'clicks','hits'
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hbase/lib/slf4j-log4j12-1.6.4.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-2.6.0/share/hadoop/common/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+2017-08-30 21:39:31,144 WARN  [main] util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+0 row(s) in 3.6560 seconds
+
+=> Hbase::Table - clicks
+
+
+2.hbase(main):004:0> put 'clicks','rw001','hits:qualifier','K2'
+0 row(s) in 0.4480 seconds
+
+hbase(main):005:0> put 'clicks','rw002','hits:qualifier','K3'
+0 row(s) in 0.0310 seconds
+
+
+hbase(main):007:0> put 'clicks','rw003','hits:qualifier','k4'
+0 row(s) in 0.0340 seconds
+
+hbase(main):008:0> put 'clicks', 'rw004','hits:qualifier','k5'
+0 row(s) in 0.0180 seconds
+
+hbase(main):009:0> put 'clicks','rw005','hits:qualifier','k6'
+0 row(s) in 0.0200 seconds
+
+hbase(main):010:0> scan 'clicks'
+ROW                   COLUMN+CELL                                               
+ rw001                column=hits:qualifier, timestamp=1504111306026, value=K2  
+ rw002                column=hits:qualifier, timestamp=1504111346836, value=K3  
+ rw003                column=hits:qualifier, timestamp=1504111469354, value=k4  
+ rw004                column=hits:qualifier, timestamp=1504111508925, value=k5  
+ rw005                column=hits:qualifier, timestamp=1504111552878, value=k6  
+5 row(s) in 0.1480 seconds
+
+
+Problem2
+========
+hbase(main):028:0> create 'emp1',{NAME=>'personal',Versions=>5}
+NameError: uninitialized constant Versions
+
+hbase(main):029:0> create 'emp1',{NAME=>'personal',VERSIONS=>5}
+0 row(s) in 0.5100 seconds
+
+=> Hbase::Table - emp1
+hbase(main):030:0> put 'emp1','10.20.20.20','personal:name','kamath'
+0 row(s) in 0.0380 seconds
+
+hbase(main):031:0> put 'emp1','10.20.20.21','personal:name','leela'
+0 row(s) in 0.0170 seconds
+
+hbase(main):032:0> put 'emp1','10.20.20.22','personal:name','sheela'
+0 row(s) in 0.0160 seconds
+
+
+Updating name from Kamath to Pai
+
+======================================
+
+hbase(main):033:0> put 'emp1','10.20.20.20','personal:name','pai'
+0 row(s) in 0.0380 seconds
+
+Adding one more row
+====================
+hbase(main):034:0> put 'emp1','10.20.20.23','personal:name','kumar'
+0 row(s) in 0.0120 seconds
+hbase(main):036:0> scan 'emp1'
+ROW                   COLUMN+CELL                                               
+ 10.20.20.20          column=personal:name, timestamp=1504115394596, value=pai  
+ 10.20.20.21          column=personal:name, timestamp=1504115287982, value=leela
+ 10.20.20.22          column=personal:name, timestamp=1504115356863, value=sheel
+                      a                                                         
+ 10.20.20.23          column=personal:name, timestamp=1504115443374, value=kumar
+ 10.20.20.24          column=personal:name, timestamp=1504115624070, value=kumar
+                      i                                                         
+5 row(s) in 0.0420 seconds
+
+
+Scanning last versions
+===================
+hbase(main):040:0> scan 'emp1',{VERSIONS=>5}
+ROW                   COLUMN+CELL                                               
+ 10.20.20.20          column=personal:name, timestamp=1504115394596, value=pai  
+ 10.20.20.20          column=personal:name, timestamp=1504115254589, value=kamat
+                      h                                                         
+ 10.20.20.21          column=personal:name, timestamp=1504115287982, value=leela
+ 10.20.20.22          column=personal:name, timestamp=1504115356863, value=sheel
+                      a                                                         
+ 10.20.20.23          column=personal:name, timestamp=1504115443374, value=kumar
+ 10.20.20.24          column=personal:name, timestamp=1504115624070, value=kumar
+                      i                                                         
+5 row(s) in 0.1230 seconds
+
+
+
+
+
